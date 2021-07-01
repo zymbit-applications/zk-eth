@@ -40,7 +40,7 @@ w3 = Web3(Web3.HTTPProvider('https://ropsten.infura.io/v3/bac2734b0e144a6dbb46c0
 #Example receiver's address
 addr = '0x15C25E6EB5dE729d7e310d059e59659cCB86E6f6'
 
-#MAKE SURE TO GENERATE A "secp256k1" KEY PAIR ON THE HSM6, this example uses slot 20
+#MAKE SURE TO GENERATE A "secp256k1" KEY PAIR ON THE HSM6, this example uses slot 16
 #Get ECDSA secp256k1 public key from zymkey and generate our Ethereum sender's checksum address
 zymkey_pub_key_slot = 16
 pub_key = zymkey.client.get_public_key(zymkey_pub_key_slot)
@@ -76,9 +76,7 @@ transaction = {
 
 loop_counter = 100
 pass_counter = 0
-pass_counter_s_changed = 0
 fail_counter = 0
-fail_counter_s_changed = 0
 #----------------------------------------Send Transaction with zymkey signature-----------------------------------------------------------------
 while loop_counter != 0:
     print("Countdown iteration: %i\n" % (loop_counter))
@@ -104,12 +102,11 @@ while loop_counter != 0:
     #From EIP 155, V = chainId * 2 + 35 + parity value of y value of public key
     r = int.from_bytes(signature[:32], "big")
     s = int.from_bytes(signature[-32:], "big")
-    s_changed = False
+
     y = int(parity.value)
     if((s*2) >= N):
        y ^= 1
        s = N - s
-       s_changed = True
 
     v = chain_id * 2 + 35 + y
 
@@ -121,13 +118,9 @@ while loop_counter != 0:
     if(from_addr == checksum):
         pass_counter += 1
         print("Pass!\n")
-        if(s_changed):
-            pass_counter_s_changed += 1
     else:
         fail_counter += 1
         print("Fail!\n")
-        if(s_changed):
-            fail_counter_s_changed += 1
     loop_counter -= 1
 
 print("Runs: %i\n" % (pass_counter + fail_counter))
