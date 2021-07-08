@@ -94,7 +94,7 @@ while loop_counter != 0:
 
     N = 115792089237316195423570985008687907852837564279074904382605163141518161494337
     # sign the transaction hash and calculate v, r, s values
-    signature, parity = zymkey.client.sign_digest(keccak_hash, zymkey_pub_key_slot)
+    signature, rec_id = zymkey.client.sign_digest(keccak_hash, zymkey_pub_key_slot, return_recid=True)
 
     #Signature consists of a R, S, V
     #R is the first half of the signature converted to int
@@ -103,7 +103,7 @@ while loop_counter != 0:
     r = int.from_bytes(signature[:32], "big")
     s = int.from_bytes(signature[-32:], "big")
 
-    y = int(parity.value)
+    y = int(rec_id.value)
     if((s*2) >= N):
        y ^= 1
        s = N - s

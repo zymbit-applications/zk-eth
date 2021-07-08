@@ -117,12 +117,12 @@ print("keccak_hash:\n%s" % keccak_hash.hexdigest())
 
 N = 115792089237316195423570985008687907852837564279074904382605163141518161494337
 # sign the transaction hash and calculate v, r, s values
-signature, parity = zymkey.client.sign_digest(keccak_hash, zymkey_pub_key_slot)
+signature, rec_id = zymkey.client.sign_digest(keccak_hash, zymkey_pub_key_slot, return_recid=True)
 print ("ECDSA Signature:\n%s" % signature)
 
 print("ECDSA Sig Length:\n%s" % len(signature))
 
-print("ECDSA Sig Recovery_id:\n%s" % parity)
+print("ECDSA Sig Recovery_id:\n%s" % rec_id.value)
 
 #Signature consists of a R, S, V
 #R is the first half of the signature converted to int
@@ -134,7 +134,7 @@ print ("S(hex):\n%s" % binascii.hexlify(signature[-32:]))
 r = int.from_bytes(signature[:32], "big")
 s = int.from_bytes(signature[-32:], "big")
 
-y = int(parity.value)
+y = rec_id.value
 if((s*2) >= N):
    y ^= 1
    s = N - s
