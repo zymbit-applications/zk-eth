@@ -7,7 +7,7 @@ import rlp
 from Crypto.Hash import keccak
 from rlp import encode
 from rlp.sedes import Binary, big_endian_int, binary
-from eth_account._utils.transactions import serializable_unsigned_transaction_from_dict, encode_transaction
+from eth_account._utils.legacy_transactions import serializable_unsigned_transaction_from_dict, encode_transaction
 from web3 import Web3
 
 class Transaction(rlp.Serializable):
